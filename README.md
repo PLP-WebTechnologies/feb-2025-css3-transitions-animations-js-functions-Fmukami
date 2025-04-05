@@ -23,115 +23,73 @@ Apply JavaScript to trigger animations.
 Happy Coding! 💻✨
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSS3 & JavaScript Interactivity</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <header>
-    <h1>Welcome to the Animated Page</h1>
-  </header>
-
-  <main>
-    <section>
-      <label for="themeSelect">Choose Background Color:</label>
-      <select id="themeSelect">
-        <option value="white">White</option>
-        <option value="lightblue">Light Blue</option>
-        <option value="lavender">Lavender</option>
-      </select>
-      <button id="savePreference">Save Preference</button>
-    </section>
-
-    <section>
-      <h2>Animated Image</h2>
-      <img src="https://images.pexels.com/photos/207962/pexels-photo-207962.jpeg" alt="Forest" id="animatedImage" />
-      <button id="animateBtn">Animate Image</button>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Animation & LocalStorage Demo</p>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
-
-/* General Styling */
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: white;
-  padding: 20px;
-  transition: background-color 0.5s ease;
-}
-
-h1, h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  background-color: #4CAF50;
+.my-button {
+  background-color: #007bff;
   color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  transition: background-color 0.3s ease; /* Smooth background color change */
 }
 
-button:hover {
-  background-color: #388e3c;
+.my-button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+  animation: pulse 1s infinite alternate; /* Apply the pulse animation */
 }
 
-/* Image styling and animation */
-#animatedImage {
-  display: block;
-  margin: 20px auto;
-  max-width: 300px;
-  border-radius: 10px;
-  transition: transform 0.4s ease;
-}
-
-.animate-spin {
-  animation: spin 1s linear forwards;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// Apply saved theme on page load
-window.addEventListener('DOMContentLoaded', () => {
-  const savedColor = localStorage.getItem('preferredColor');
-  if (savedColor) {
-    document.body.style.backgroundColor = savedColor;
-    document.getElementById('themeSelect').value = savedColor;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
   }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+function saveThemePreference(theme) {
+  localStorage.setItem('preferredTheme', theme);
+}
+
+function getThemePreference() {
+  return localStorage.getItem('preferredTheme') || 'light'; // Default to 'light' if nothing is stored
+}
+
+// Example of how you might use these functions
+function setTheme(theme) {
+  document.body.className = theme; // Apply the theme class to the body
+  saveThemePreference(theme);     // Remember the preference
+}
+
+// On page load, apply the saved theme (if any)
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = getThemePreference();
+  setTheme(savedTheme);
 });
 
-// Save preference and apply background color
-document.getElementById('savePreference').addEventListener('click', () => {
-  const color = document.getElementById('themeSelect').value;
-  localStorage.setItem('preferredColor', color);
-  document.body.style.backgroundColor = color;
-});
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
 
-// Animate image on button click
-document.getElementById('animateBtn').addEventListener('click', () => {
-  const img = document.getElementById('animatedImage');
-  img.classList.remove('animate-spin'); // Reset
-  void img.offsetWidth; // Trigger reflow
-  img.classList.add('animate-spin');
-});
+.bounce-animation {
+  animation: bounce 0.5s ease-in-out;
+}
+const myButton = document.querySelector('.my-button');
 
+myButton.addEventListener('click', () => {
+  myButton.classList.add('bounce-animation');
+
+  // Remove the class after the animation finishes to allow it to trigger again
+  setTimeout(() => {
+    myButton.classList.remove('bounce-animation');
+  }, 500); // Matches the duration of the bounce animation
+});
 
