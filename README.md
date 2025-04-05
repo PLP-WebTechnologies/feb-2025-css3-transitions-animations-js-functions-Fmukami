@@ -20,76 +20,198 @@ Create a CSS animation.
 Store data in localStorage.
 Apply JavaScript to trigger animations.
 
-Happy Coding! 💻✨
+Happy Coding 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Animations and LocalStorage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.5s ease; /* Smooth transition for theme changes */
+        }
+        body.dark-theme {
+            background-color: #222;
+            color: #eee;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.5s ease; /* Smooth transition for theme changes */
+            max-width: 80%;
+        }
+        .container.dark-theme {
+            background-color: #333;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            transition: color 0.5s ease; /* Smooth transition for theme changes */
+        }
+        h1.dark-theme{
+             color: #fff;
+        }
+
+        #myButton {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition:
+              background-color 0.3s ease,
+              transform 0.2s ease; /* Added transform for scaling */
+            margin-bottom: 20px;
+        }
+
+        #myButton:hover {
+            background-color: #0056b3;
+        }
+
+        #myButton:active {
+            background-color: #004080;
+            transform: scale(0.95); /* Simulate button press */
+        }
+
+        .animated-image {
+            width: 150px;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            animation: fadeIn 2s ease, slideIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+          from {
+            transform: translateX(-100px);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        #themeSwitcher {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        #themeSwitcher:hover {
+            background-color: #45a049;
+        }
+
+        #themeSwitcher.dark-theme {
+            background-color: #FFA500; /* A different color for dark theme */
+        }
+
+         #themeSwitcher.dark-theme:hover {
+            background-color: #FF8C00;
+        }
+
+        .flash-warning {
+            animation: flash 2s infinite;
+            color: red;
+        }
+
+        @keyframes flash {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="mainTitle">Welcome!</h1>
+        <button id="myButton">Click Me</button>
+        <img src="https://placehold.co/150x80/EEE/31343C" alt="Placeholder Image" class="animated-image">
+         <button id="themeSwitcher">Toggle Theme</button>
+    </div>
+
+    <script>
+        const myButton = document.getElementById('myButton');
+        const animatedImage = document.querySelector('.animated-image');
+        const body = document.body;
+        const container = document.querySelector('.container');
+        const mainTitle = document.getElementById('mainTitle');
+        const themeSwitcher = document.getElementById('themeSwitcher');
+
+        // Function to add bounce animation
+        function addBounceAnimation() {
+            myButton.classList.add('bounce-animation');
+            myButton.addEventListener('animationend', () => {
+                myButton.classList.remove('bounce-animation');
+            }, { once: true }); // Remove listener after it fires once
+        }
+
+        // Event listener for the button click
+        myButton.addEventListener('click', addBounceAnimation);
 
 
-.my-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease; /* Smooth background color change */
-}
+        // Function to save theme preference to localStorage
+        function saveThemePreference(theme) {
+            localStorage.setItem('preferredTheme', theme);
+        }
 
-.my-button:hover {
-  background-color: #0056b3; /* Darker shade on hover */
-  animation: pulse 1s infinite alternate; /* Apply the pulse animation */
-}
+        // Function to get theme preference from localStorage
+        function getThemePreference() {
+            return localStorage.getItem('preferredTheme') || 'light'; // Default to 'light'
+        }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
-}
+        // Function to set the theme
+        function setTheme(theme) {
+            body.className = theme; // Apply theme to body
+            container.className = `container ${theme}`; // Apply to container
+            mainTitle.className = theme; // Apply to main title.
+            themeSwitcher.className = themeSwitcher.className.replace(/(light|dark)-theme/g, '').trim() + ` ${theme}-theme`;
 
-function saveThemePreference(theme) {
-  localStorage.setItem('preferredTheme', theme);
-}
+            saveThemePreference(theme); // Save to localStorage
+        }
 
-function getThemePreference() {
-  return localStorage.getItem('preferredTheme') || 'light'; // Default to 'light' if nothing is stored
-}
+        // On page load, apply the saved theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = getThemePreference();
+            setTheme(savedTheme);
+        });
 
-// Example of how you might use these functions
-function setTheme(theme) {
-  document.body.className = theme; // Apply the theme class to the body
-  saveThemePreference(theme);     // Remember the preference
-}
+       // Theme switcher button event listener
+        themeSwitcher.addEventListener('click', () => {
+            const currentTheme = body.className;
+            const newTheme = currentTheme === 'dark-theme' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    </script>
+</body>
+</html>
 
-// On page load, apply the saved theme (if any)
-document.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = getThemePreference();
-  setTheme(savedTheme);
-});
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-}
-
-.bounce-animation {
-  animation: bounce 0.5s ease-in-out;
-}
-const myButton = document.querySelector('.my-button');
-
-myButton.addEventListener('click', () => {
-  myButton.classList.add('bounce-animation');
-
-  // Remove the class after the animation finishes to allow it to trigger again
-  setTimeout(() => {
-    myButton.classList.remove('bounce-animation');
-  }, 500); // Matches the duration of the bounce animation
-});
 
